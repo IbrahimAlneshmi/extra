@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Text Extraction</title>
+</head>
+<body>
+    <h1>Text Extraction from Image</h1>
+    <input type="file" accept="image/*" id="imageInput">
+    <button id="extractButton">Extract Text</button>
+    <p id="outputText"></p>
+
+    <script src="https://cdn.rawgit.com/naptha/tesseract.js/1.0.10/dist/tesseract.js"></script>
+    <script>
+        document.getElementById('extractButton').addEventListener('click', function () {
+            var imageInput = document.getElementById('imageInput');
+            var outputText = document.getElementById('outputText');
+
+            if (imageInput.files.length === 0) {
+                outputText.textContent = 'Please select an image.';
+                return;
+            }
+
+            var imageFile = imageInput.files[0];
+
+            Tesseract.recognize(
+                imageFile,
+                'eng+ara', // 'eng' for English, 'ara' for Arabic
+                { logger: info => console.log(info) }
+            ).then(({ data: { text } }) => {
+                if (text && text.trim() !== '') {
+                    outputText.textContent = text;
+                } else {
+                    outputText.textContent = 'No text found in the image.';
+                }
+            }).catch(error => {
+                outputText.textContent = 'An error occurred: ' + error.message;
+            });
+        });
+    </script>
+</body>
+</html>
