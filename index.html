@@ -26,5 +26,16 @@
             document.getElementById('extracted_text').textContent = data.text;
         });
     </script>
+    <script>
+  fetch('response.json')
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('extracted-text').textContent = data.text;
+    })
+    .catch(error => {
+      console.error('An error occurred', error);
+    });
+</script>
+
 </body>
 </html>
