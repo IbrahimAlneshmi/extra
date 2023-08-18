@@ -7,35 +7,25 @@
     <h1>Image Text Extraction</h1>
     <form action="/upload_image" method="post" enctype="multipart/form-data">
         <input type="file" name="image">
-        <input type="submit" value="Extract Text">
+        <button type="submit">Extract Text</button>
     </form>
-    <p>Extracted Text:</p>
-    <div id="extracted_text"></div>
-    
+    <div id="result"></div>
+
     <script>
-        document.querySelector('form').addEventListener('submit', async (event) => {
-            event.preventDefault();
+        document.querySelector('form').addEventListener('submit', async (e) => {
+            e.preventDefault();
             
-            const formData = new FormData(event.target);
+            const formData = new FormData();
+            formData.append('image', e.target.image.files[0]);
+
             const response = await fetch('/upload_image', {
                 method: 'POST',
                 body: formData
             });
-            
+
             const data = await response.json();
-            document.getElementById('extracted_text').textContent = data.text;
+            document.getElementById('result').textContent = data.text;
         });
     </script>
-    <script>
-  fetch('response.json')
-    .then(response => response.json())
-    .then(data => {
-      document.getElementById('extracted-text').textContent = data.text;
-    })
-    .catch(error => {
-      console.error('An error occurred', error);
-    });
-</script>
-
 </body>
 </html>
