@@ -6,31 +6,50 @@
     <link href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.css" rel="stylesheet">
     <style>
         body, html {
-    margin: 0;
-    padding: 5%;
+    margin: 10;
+    padding: 2%;
     width: 100vw; /* تعيين العرض ليكون 100% من عرض الشاشة */
     height: 100vh; /* تعيين الارتفاع ليكون 100% من ارتفاع الشاشة */
-    overflow: hidden; /* منع ظهور شريط التمرير */
-}
-button {
-    width: 150px;
-    height: 50px;
-    margin-bottom: 20px;
-}
+     /* منع ظهور شريط التمرير */
+        }
+        /* تحديد الأزرار بواسطة معرفاتها أو كلاساتها */
+        #openCameraButton {
+            margin-bottom: 50px; /* مسافة بين زر الفتح والزر الآخر */
+        }
+
+        #captureButton {
+            margin-bottom: 10px; /* مسافة بين زر الالتقاط والزر الآخر */
+            justify-content: center; /* لتوسيط العناصر عمودياً */
+            align-items: center;
+        }
+
+        #extractButton {
+            margin-bottom: 30px; /* مسافة بين زر الاستخراج والزر الآخر */
+        }
+
+        /* زيادة حجم الأزرار */
+        button {
+            width: 200px;
+            height: 50px;
+        }
+        video {
+            transform: scaleX(-1); /* قلب الصورة أفقياً */
+        }
 
     </style>
 </head>
 <body>
     <h1>Camera Image Capture</h1>
-    <button id="openFrontCameraButton">Open Front Camera</button>
+   <button id="openFrontCameraButton">Open Front Camera</button>
     <button id="openBackCameraButton">Open Back Camera</button>
     
     <button id="extractButton" disabled>Extract Text</button>
     <button id="copyButton" disabled>Copy Text</button>
-    <pre id="outputText"></pre>
+    
     <div id="imagePreview"></div>
-    <div id="cropperContainer" style="display:none;"></div>
-    <button id="captureButton" style="display:none;">Capture Image</button>
+    <div id="cropperContainer"  style="display:none;"></div>
+    <button id="captureButton" style="display:none;" class="captureButton">Capture Image</button>
+    <pre id="outputText"></pre>
 
     <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.js"></script>
     <script>

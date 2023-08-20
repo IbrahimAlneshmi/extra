@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Text Extraction</title>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.css" rel="stylesheet">
+</head>
+<body>
+    <h1>Text Extraction from Cropped Image</h1>
+    <input type="file" accept="image/*" id="imageInput">
+    <button id="cropButton" disabled>Crop Image</button>
+    <button id="extractButton" disabled>Extract Text</button>
+    <p id="outputText"></p>
+    <div id="imagePreview"></div>
+    <div id="cropperContainer" style="display:none;"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.js"></script>
+    <script>
+        var imageInput = document.getElementById('imageInput');
+        var cropButton = document.getElementById('cropButton');
+        var extractButton = document.getElementById('extractButton');
+        var outputText = document.getElementById('outputText');
+        var imagePreview = document.getElementById('imagePreview');
+        var cropperContainer = document.getElementById('cropperContainer');
+        var cropper = null;
+
+        imageInput.addEventListener('change', function () {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var image = new Image();
+                image.src = e.target.result;
+
+                image.onload = function () {
+                    imagePreview.innerHTML = ''; // Clear previous preview
+                    imagePreview.appendChild(image);
+
+                    // Initialize Cropper.js
+                    cropperContainer.style.display = 'block';
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+                    cropper = new Cropper(image, {
+                        aspectRatio: 16 / 9, // Example aspect ratio
+                        crop(event) {
+                            cropButton.disabled = false;
+                        }
+                    });
+
+                    // Disable the extract button
+                    extractButton.disabled = true;
+                };
+            };
+            reader.readAsDataURL(this.files[0]);
+        });
+
+        cropButton.addEventListener('click', function () {
+            var croppedCanvas = cropper.getCroppedCanvas();
+            var croppedImage = document.createElement('img');
+            croppedImage.src = croppedCanvas.toDataURL();
+
+            // Remove previous preview and Cropper instance
+            imagePreview.innerHTML = '';
+            cropper.destroy();
+
+            imagePreview.appendChild(croppedImage);
+
+            // Enable the extract button
+            extractButton.disabled = false;
+            cropButton.disabled = true;
+        });
+
+        extractButton.addEventListener('click', function () {
+            if (imagePreview.children.length === 0) {
+                outputText.textContent = 'Please crop an image first.';
+                return;
+            }
+
+            outputText.textContent = 'Extracting...';
+            var selectedImage = imagePreview.querySelector('img');
+
+            Tesseract.recognize(
+                selectedImage,
+                'ara+eng', // Language code for Arabic and English
+                { logger: m => console.log(m) }
+            ).then(({ data: { text } }) => {
+                outputText.textContent = text;
+                // Remove the cropped image from the preview
+                imagePreview.innerHTML = '';
+            }).catch(error => {
+                outputText.textContent = 'An error occurred: ' + error.message;
+            });
+        });
+    </script>
+</body>
+</html>
